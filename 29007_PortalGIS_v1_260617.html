@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal GIS - Alhaurín de la Torre</title>
+    <!-- Iconos de Google Material Design -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        :root {
+            --azul-corporativo: #004a80; /* Azul del nuevo escudo */
+            --azul-claro: #e8f0fe;
+            --texto-principal: #202124;
+            --texto-secundario: #5f6368;
+            --blanco: #ffffff;
+            --gris-fondo: #f8f9fa;
+            --sombra-google: 0 1px 2px 0 rgba(60,64,67, .30), 0 1px 3px 1px rgba(60,64,67, .15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--gris-fondo);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* CABECERA */
+        header {
+            text-align: center;
+            padding: 50px 20px 30px 20px;
+            max-width: 800px;
+        }
+
+        .escudo {
+            width: 180px; /* Tamaño ajustado para el nuevo logo con texto */
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--azul-corporativo);
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .subtitulo {
+            font-size: 1.1rem;
+            color: var(--texto-secundario);
+            line-height: 1.5;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* CUADRÍCULA DE VISORES (4 TARJETAS) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Cuadrícula de 2x2 */
+            gap: 25px;
+            width: 90%;
+            max-width: 900px;
+            padding: 30px 0;
+        }
+
+        .card {
+            background-color: var(--blanco);
+            border-radius: 16px;
+            padding: 35px 25px;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #dadce0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            box-shadow: var(--sombra-google);
+            transform: translateY(-2px);
+            border-color: transparent;
+        }
+
+        .material-symbols-outlined {
+            font-size: 45px;
+            color: var(--azul-corporativo);
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: var(--azul-corporativo);
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--texto-secundario);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* SECCIÓN DE ENLACES DE UTILIDAD */
+        .utilidades {
+            margin-top: auto;
+            text-align: center;
+            width: 100%;
+            padding: 50px 20px;
+            background-color: white;
+            border-top: 1px solid #dadce0;
+        }
+
+        .utilidades h3 {
+            font-size: 0.85rem;
+            color: var(--texto-secundario);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+        }
+
+        .botones-secundarios {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border: 1px solid #dadce0;
+            color: var(--texto-principal);
+        }
+
+        .btn-destacado {
+            background-color: var(--azul-claro);
+            color: var(--azul-corporativo);
+            border: 1px solid transparent;
+        }
+
+        .btn:hover {
+            background-color: #f1f3f4;
+        }
+
+        /* AJUSTE PARA MÓVILES */
+        @media (max-width: 650px) {
+            .grid-container {
+                grid-template-columns: 1fr; /* Una sola columna en móvil */
+            }
+            h1 { font-size: 1.8rem; }
+            .escudo { width: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Sustituye 'escudo.png' por el nombre del archivo de imagen que descargaste -->
+        <img src="escudo.png" alt="Ayuntamiento de Alhaurín de la Torre" class="escudo">
+        <h1>Portal GIS - Alhaurín de la Torre</h1>
+        <p class="subtitulo">Acceso a los visores de datos geográficos, urbanísticos y de actividad del municipio.</p>
+    </header>
+
+    <main class="grid-container">
+        <!-- Tarjeta 1 -->
+        <a href="https://alhaurintorre.github.io/Actividad-Econ-mica-2024/" target="_blank" class="card">
+            <span class="material-symbols-outlined">payments</span>
+            <h2>Actividad Económica 2024</h2>
+            <p>Visor de datos económicos del municipio.</p>
+        </a>
+
+        <!-- Tarjeta 2 -->
+        <a href="https://alhaurintorre.github.io/urbanismo-alhaurin/" target="_blank" class="card">
+            <span class="material-symbols-outlined">location_city</span>
+            <h2>Urbanismo Alhaurín</h2>
+            <p>Consulta de datos urbanísticos generales.</p>
+        </a>
+
+        <!-- Tarjeta 3 -->
+        <a href="https://alhaurintorre.github.io/Urbanismo-Calificaci-n-Catastro/" target="_blank" class="card">
+            <span class="material-symbols-outlined">layers</span>
+            <h2>Calificación y Catastro</h2>
+            <p>Información cartográfica y catastral.</p>
+        </a>
+
+        <!-- Tarjeta 4 -->
+        <a href="https://alhaurintorre.github.io/29007-Urb-Redes/" target="_blank" class="card">
+            <span class="material-symbols-outlined">account_tree</span>
+            <h2>Redes Urbanas</h2>
+            <p>Visor de redes e infraestructuras municipales.</p>
+        </a>
+    </main>
+
+    <section class="utilidades">
+        <h3>Enlaces de Utilidad</h3>
+        <div class="botones-secundarios">
+            <!-- Botón Normativa -->
+            <a href="https://alhaurindelatorre.es/category/areas-municipales/urbanismo-obras-e-infrastructure-viaria/planeamiento-urbanistico/" target="_blank" class="btn">
+                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">description</span>
+                Normativa Urbanística
+            </a>
+
+            <!-- Botón Web Oficial -->
+            <a href="https://www.alhaurindelatorre.es/" target="_blank" class="btn">
+                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">account_balance</span>
+                Web Ayuntamiento
+            </a>
+
+            <!-- Botón Incidencias -->
+            <a href="https://forms.gle/MgJXwuq5Qnbb1bWDA" target="_blank" class="btn btn-destacado">
+                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">feedback</span>
+                Reportar Incidencia
+            </a>
+        </div>
+    </section>
+
+</body>
+</html>
