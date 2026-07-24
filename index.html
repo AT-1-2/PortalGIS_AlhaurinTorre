@@ -4,227 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal GIS - Alhaurín de la Torre</title>
-    <!-- Iconos de Google Material Design -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    
     <style>
         :root {
-            --azul-corporativo: #004a80; /* Azul del nuevo escudo */
-            --azul-claro: #e8f0fe;
-            --texto-principal: #202124;
-            --texto-secundario: #5f6368;
+            --azul-alhaurin: #056cf2;
+            --verde-alhaurin: #055902;
+            --amarillo-alhaurin: #f2e205;
+            --rojo-alhaurin: #bf1304;
             --blanco: #ffffff;
-            --gris-fondo: #f8f9fa;
-            --sombra-google: 0 1px 2px 0 rgba(60,64,67, .30), 0 1px 3px 1px rgba(60,64,67, .15);
+            --gris-fondo: #f4f7f9;
+            --texto: #202124;
+            --sombra: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--gris-fondo);
-            color: var(--texto-principal);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            color: var(--texto);
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* CABECERA */
-        header {
-            text-align: center;
-            padding: 50px 20px 30px 20px;
-            max-width: 800px;
+        header { text-align: center; padding: 30px; }
+        .escudo { width: 100px; margin-bottom: 15px; }
+        h1 { color: var(--azul-alhaurin); margin: 5px 0; font-size: 1.8rem; font-weight: 700; }
+
+        .container { width: 95%; max-width: 1100px; margin-bottom: 40px; }
+        
+        .titulo-seccion {
+            font-size: 1.2rem; color: var(--azul-alhaurin);
+            border-bottom: 3px solid var(--amarillo-alhaurin);
+            padding-bottom: 8px; margin-bottom: 20px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .escudo {
-            width: 180px; /* Tamaño ajustado para el nuevo logo con texto */
-            height: auto;
-            margin-bottom: 20px;
+        /* --- VISOR PÚBLICO (PRINCIPAL) --- */
+        .visor-principal {
+            background: white; border-radius: 15px; overflow: hidden;
+            border: 2px solid var(--azul-alhaurin); box-shadow: var(--sombra);
+        }
+        .visor-header {
+            background: var(--azul-alhaurin); color: white;
+            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+        iframe { width: 100%; height: 600px; border: none; }
+        .btn-full {
+            background: var(--amarillo-alhaurin); color: #000; padding: 6px 14px;
+            border-radius: 20px; text-decoration: none; font-size: 0.8rem; font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-full:hover { transform: scale(1.05); }
+
+        /* --- ÁREA INTERNA (RESTRINGIDA) --- */
+        .seccion-interna {
+            background: #fff; border: 2px solid var(--borde); border-radius: 15px;
+            padding: 30px; border: 2px dashed var(--rojo-alhaurin);
+        }
+        
+        /* Muro de acceso preparado */
+        .muro-login {
+            text-align: center; padding: 20px; border-bottom: 1px solid #eee; margin-bottom: 25px;
+            display: none; /* Cambiar a 'block' para activar el bloqueo visual */
+        }
+        
+        .grid-privado {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
         }
 
-        h1 {
-            font-size: 2.2rem;
-            color: var(--azul-corporativo);
-            margin: 10px 0;
-            font-weight: 500;
+        .card-privada {
+            background: white; border-radius: 12px; padding: 20px;
+            text-decoration: none; color: inherit; text-align: center;
+            border: 1px solid #eee; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+        .card-privada:hover {
+            border-color: var(--rojo-alhaurin);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(191, 19, 4, 0.1);
+        }
+        .card-privada i { font-size: 40px; color: var(--rojo-alhaurin); margin-bottom: 10px; }
+        .card-privada h3 { margin: 5px 0; font-size: 1.1rem; color: var(--rojo-alhaurin); }
+        .card-privada p { font-size: 0.85rem; color: #666; margin: 0; }
 
-        .subtitulo {
-            font-size: 1.1rem;
-            color: var(--texto-secundario);
-            line-height: 1.5;
-            max-width: 550px;
-            margin: 0 auto;
+        /* BUSCADOR */
+        .search-box { width: 90%; max-width: 400px; margin: 20px 0; position: relative; }
+        #buscador {
+            width: 100%; padding: 10px 40px; border-radius: 20px;
+            border: 1px solid var(--azul-alhaurin); outline: none;
         }
+        .search-box i { position: absolute; left: 12px; top: 10px; color: var(--azul-alhaurin); }
 
-        /* CUADRÍCULA DE VISORES (4 TARJETAS) */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Cuadrícula de 2x2 */
-            gap: 25px;
-            width: 90%;
-            max-width: 900px;
-            padding: 30px 0;
-        }
+        /* FOOTER */
+        footer { background: #fff; width: 100%; padding: 40px 20px; text-align: center; border-top: 1px solid #ddd; margin-top: auto; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .btn-footer { text-decoration: none; color: var(--azul-alhaurin); font-weight: 600; font-size: 0.9rem; }
 
-        .card {
-            background-color: var(--blanco);
-            border-radius: 16px;
-            padding: 35px 25px;
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            border: 1px solid #dadce0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .card:hover {
-            box-shadow: var(--sombra-google);
-            transform: translateY(-2px);
-            border-color: transparent;
-        }
-
-        .material-symbols-outlined {
-            font-size: 45px;
-            color: var(--azul-corporativo);
-            margin-bottom: 15px;
-        }
-
-        .card h2 {
-            color: var(--azul-corporativo);
-            margin: 0 0 10px 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .card p {
-            color: var(--texto-secundario);
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        /* SECCIÓN DE ENLACES DE UTILIDAD */
-        .utilidades {
-            margin-top: auto;
-            text-align: center;
-            width: 100%;
-            padding: 50px 20px;
-            background-color: white;
-            border-top: 1px solid #dadce0;
-        }
-
-        .utilidades h3 {
-            font-size: 0.85rem;
-            color: var(--texto-secundario);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 25px;
-        }
-
-        .botones-secundarios {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: 24px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: background-color 0.2s;
-            border: 1px solid #dadce0;
-            color: var(--texto-principal);
-        }
-
-        .btn-destacado {
-            background-color: var(--azul-claro);
-            color: var(--azul-corporativo);
-            border: 1px solid transparent;
-        }
-
-        .btn:hover {
-            background-color: #f1f3f4;
-        }
-
-        /* AJUSTE PARA MÓVILES */
-        @media (max-width: 650px) {
-            .grid-container {
-                grid-template-columns: 1fr; /* Una sola columna en móvil */
-            }
-            h1 { font-size: 1.8rem; }
-            .escudo { width: 150px; }
-        }
+        @media (max-width: 600px) { iframe { height: 400px; } }
     </style>
 </head>
 <body>
 
     <header>
-        <!-- Sustituye 'escudo.png' por el nombre del archivo de imagen que descargaste -->
-        <img src="escudo.png" alt="Ayuntamiento de Alhaurín de la Torre" class="escudo">
-        <h1>Portal GIS - Alhaurín de la Torre</h1>
-        <p class="subtitulo">Acceso a los visores de datos geográficos, urbanísticos y de actividad del municipio.</p>
+        <img src="escudo.png" alt="Escudo Alhaurín de la Torre" class="escudo">
+        <h1>Portal GIS Municipal</h1>
     </header>
 
-    <main class="grid-container">
-        <!-- Tarjeta 1 -->
-        <a href="https://alhaurintorre.github.io/Actividad-Econ-mica-2024/" target="_blank" class="card">
-            <span class="material-symbols-outlined">payments</span>
-            <h2>Actividad Económica 2024</h2>
-            <p>Visor de datos económicos del municipio.</p>
-        </a>
-
-        <!-- Tarjeta 2 -->
-        <a href="https://alhaurintorre.github.io/urbanismo-alhaurin/" target="_blank" class="card">
-            <span class="material-symbols-outlined">location_city</span>
-            <h2>Urbanismo Alhaurín</h2>
-            <p>Consulta de datos urbanísticos generales.</p>
-        </a>
-
-        <!-- Tarjeta 3 -->
-        <a href="https://alhaurintorre.github.io/Urbanismo-Calificaci-n-Catastro/" target="_blank" class="card">
-            <span class="material-symbols-outlined">layers</span>
-            <h2>Calificación y Catastro</h2>
-            <p>Información cartográfica y catastral.</p>
-        </a>
-
-        <!-- Tarjeta 4 -->
-        <a href="https://alhaurintorre.github.io/29007-Urb-Redes/" target="_blank" class="card">
-            <span class="material-symbols-outlined">account_tree</span>
-            <h2>Redes Urbanas</h2>
-            <p>Visor de redes e infraestructuras municipales.</p>
-        </a>
-    </main>
-
-    <section class="utilidades">
-        <h3>Enlaces de Utilidad</h3>
-        <div class="botones-secundarios">
-            <!-- Botón Normativa -->
-            <a href="https://alhaurindelatorre.es/category/areas-municipales/urbanismo-obras-e-infrastructure-viaria/planeamiento-urbanistico/" target="_blank" class="btn">
-                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">description</span>
-                Normativa Urbanística
-            </a>
-
-            <!-- Botón Web Oficial -->
-            <a href="https://www.alhaurindelatorre.es/" target="_blank" class="btn">
-                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">account_balance</span>
-                Web Ayuntamiento
-            </a>
-
-            <!-- Botón Incidencias -->
-            <a href="https://forms.gle/MgJXwuq5Qnbb1bWDA" target="_blank" class="btn btn-destacado">
-                <span class="material-symbols-outlined" style="font-size: 20px; margin:0;">feedback</span>
-                Reportar Incidencia
-            </a>
+    <!-- 1. VISOR PÚBLICO (ÚNICO) -->
+    <div class="container">
+        <div class="titulo-seccion">
+            <span class="material-symbols-outlined">visibility</span> Visor de Consulta Pública: Calificación y Catastro
         </div>
-    </section>
+        <div class="visor-principal">
+            <div class="visor-header">
+                <span>Información Geográfica y Parcelario</span>
+                <a href="https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529" target="_blank" class="btn-full">VER EN PANTALLA COMPLETA</a>
+            </div>
+            <iframe src="https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529"></iframe>
+        </div>
+    </div>
+
+    <!-- 2. ÁREA RESTRINGIDA (PREPARADA) -->
+    <div class="container">
+        <div class="titulo-seccion" style="color: var(--rojo-alhaurin);">
+            <span class="material-symbols-outlined">admin_panel_settings</span> Área de Uso Interno (Restringido)
+        </div>
+
+        <div class="seccion-interna">
+            
+            <!-- Bloque de Login (Preparado pero oculto) -->
+            <div id="muro-acceso" class="muro-login">
+                <span class="material-symbols-outlined" style="font-size: 40px; color: var(--rojo-alhaurin);">lock</span>
+                <h3>Acceso Restringido</h3>
+                <input type="password" id="pass" placeholder="Clave de acceso" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                <button onclick="verificar()" style="padding: 10px 20px; background: var(--azul-alhaurin); color:white; border:none; border-radius:5px; cursor:pointer;">Entrar</button>
+            </div>
+
+            <!-- Buscador para los visores internos -->
+            <div class="search-box">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="buscador" placeholder="Filtrar visores internos..." onkeyup="filtrar()">
+            </div>
+
+            <div class="grid-privado" id="grid-interna">
+                <!-- ACTIVIDAD ECONÓMICA -->
+                <a href="https://at-1-2.github.io/Actividad-Econ-mica-2024/" target="_blank" class="card-privada item">
+                    <span class="material-symbols-outlined">payments</span>
+                    <h3>Actividad Económica</h3>
+                    <p>Capa de datos económicos y actividades 2024.</p>
+                </a>
+
+                <!-- CATASTRO (ANTERIOR URBANISMO) -->
+                <a href="https://at-1-2.github.io/urbanismo-alhaurin/" target="_blank" class="card-privada item">
+                    <span class="material-symbols-outlined">location_city</span>
+                    <h3>Catastro</h3>
+                    <p>Consulta técnica de parcelas y planeamiento.</p>
+                </a>
+
+                <!-- INFRAESTRUCTURA SANEAMIENTO -->
+                <a href="https://at-1-2.github.io/29007-Urb-Redes/" target="_blank" class="card-privada item">
+                    <span class="material-symbols-outlined">plumbing</span>
+                    <h3>Infraestructura Saneamiento</h3>
+                    <p>Redes de abastecimiento y servicios técnicos.</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>Ayuntamiento de Alhaurín de la Torre</strong></p>
+        <p style="font-size: 0.85rem; color: #666;">Área de Urbanismo e Infraestructuras - Sistema de Información Geográfica</p>
+        <div class="footer-links">
+            <a href="https://alhaurindelatorre.es/category/areas-municipales/urbanismo-obras-e-infraestructura-viaria/planeamiento-urbanistico/" target="_blank" class="btn-footer">Normativa</a>
+            <a href="https://www.alhaurindelatorre.es/" target="_blank" class="btn-footer">Web Municipal</a>
+            <a href="https://forms.gle/MgJXwuq5Qnbb1bWDA" target="_blank" class="btn-footer" style="color:var(--rojo-alhaurin);">Reportar Incidencia</a>
+        </div>
+    </footer>
+
+    <script>
+        // Función para filtrar los visores internos
+        function filtrar() {
+            let val = document.getElementById('buscador').value.toLowerCase();
+            let items = document.getElementsByClassName('item');
+            for (let i of items) {
+                i.style.display = i.innerText.toLowerCase().includes(val) ? "" : "none";
+            }
+        }
+
+        // Lógica de contraseña (Preparada)
+        // Actualmente no bloquea nada, pero está lista para usarse.
+        function verificar() {
+            const claveCorrecta = "29130"; // Define aquí tu clave
+            let pass = document.getElementById('pass').value;
+            
+            if (pass === claveCorrecta) {
+                document.getElementById('muro-acceso').style.display = "none";
+                document.getElementById('grid-interna').style.opacity = "1";
+                document.getElementById('grid-interna').style.pointerEvents = "auto";
+            } else {
+                alert("Acceso denegado. Clave incorrecta.");
+            }
+        }
+
+        /* 
+           PARA ACTIVAR EL BLOQUEO POR CONTRASEÑA:
+           1. En el CSS, cambia en '.muro-login' el 'display: none;' por 'display: block;'
+           2. En el HTML, añade al div 'grid-interna' el estilo: style="opacity: 0.1; pointer-events: none;"
+        */
+    </script>
 
 </body>
 </html>
