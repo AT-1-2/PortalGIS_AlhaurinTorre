@@ -4,286 +4,913 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal GIS - Alhaurín de la Torre</title>
+    <meta name="description" content="Portal de Información Territorial y Datos Espaciales del Ayuntamiento de Alhaurín de la Torre.">
     
-    <!-- Tipografía y Iconos -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <!-- Tipografía Inter y Material Symbols de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
     
     <style>
         :root {
-            /* Paleta Oficial Harmonizada */
             --primary: #4AA8D4;       /* Azul Alhaurín */
             --secondary: #A3D2A2;     /* Verde funcional */
             --accent: #FFD8A8;        /* Amarillo acción */
             --warning: #D9A60F;       /* Ocre técnico */
             --background: #FFFFFF;    /* Blanco puro */
-            --surface: #F8FAFC;       /* Gris muy suave para contraste sutil */
-            --text-main: #1E293B;     /* Azul oscuro para lectura */
-            --text-muted: #64748B;    /* Gris para descripciones */
+            --surface: #F8FAFC;       /* Gris suave para contraste */
+            --text-main: #1E293B;     /* Azul/gris oscuro */
+            --text-muted: #64748B;    /* Gris descriptivo */
             --border: #E2E8F0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
         }
 
-        /* Reset y Base */
+        html {
+            font-size: 16px;
+            transition: font-size 0.2s ease;
+            scroll-behavior: smooth;
+        }
+
+        /* Escala dinámica de accesibilidad */
+        html.font-lg { font-size: 18.5px !important; }
+        html.font-xl { font-size: 21px !important; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--background);
             color: var(--text-main);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Accesibilidad: Foco */
-        a:focus, button:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
-
-        /* Header Institucional */
-        header {
-            padding: 60px 20px 40px;
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* MODO ALTO CONTRASTE (WCAG AAA - Ningún texto oscuro sobre fondo oscuro) */
+        body.alto-contraste {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
         }
-        .escudo { width: 100px; height: auto; margin-bottom: 24px; }
-        h1 { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            color: var(--text-main); 
-            letter-spacing: -0.025em;
-            margin-bottom: 8px;
+        body.alto-contraste * {
+            border-color: #FFFF00 !important;
         }
-        .tagline { 
-            color: var(--text-muted); 
-            font-size: 1.1rem; 
-            max-width: 600px; 
-            margin: 0 auto; 
+        body.alto-contraste h1, body.alto-contraste h2, body.alto-contraste h3, body.alto-contraste h4 {
+            color: #FFFF00 !important;
+        }
+        body.alto-contraste p, body.alto-contraste span, body.alto-contraste li {
+            color: #FFFFFF !important;
+        }
+        body.alto-contraste .card, body.alto-contraste .visor-hero, body.alto-contraste .test-area, body.alto-contraste .disclaimer-box {
+            background-color: #121212 !important;
+            border: 2px solid #FFFF00 !important;
+        }
+        body.alto-contraste input {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+            border: 2px solid #FFFF00 !important;
+        }
+        body.alto-contraste button, body.alto-contraste a {
+            color: #FFFF00 !important;
         }
 
-        /* Contenedor Principal */
-        main { width: 92%; max-width: 1200px; margin: 0 auto 80px; }
-
-        /* Secciones */
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 12px;
+        /* Barra institucional superior */
+        .top-nav {
+            width: 100%;
             border-bottom: 1px solid var(--border);
-        }
-        .section-header h2 { font-size: 1.25rem; font-weight: 600; }
-        .section-header .icon { color: var(--primary); }
-
-        /* Visor Público (Héroe de la página) */
-        .visor-hero {
-            background: var(--background);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 60px;
-        }
-        .visor-toolbar {
+            padding: 8px 16px;
             background: var(--surface);
-            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
+        }
+        .top-nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        .acc-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-acc-toggle, .btn-font {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Cabecera */
+        header {
+            padding: 35px 20px 20px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .escudo-container {
+            width: 90px;
+            margin: 0 auto 12px;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+        }
+        .escudo-container svg { width: 100%; height: auto; }
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 6px;
+        }
+        .accent-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            margin: 8px auto 14px;
+            border-radius: 2px;
+        }
+        .tagline {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 650px;
+            margin: 0 auto 18px;
+        }
+
+        /* Disclaimer reducido por defecto */
+        .disclaimer-box {
+            background: #FFFBEB;
+            border: 1px solid #FCD34D;
+            border-radius: 12px;
+            padding: 12px 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+        .disclaimer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .disclaimer-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #78350F;
+        }
+        .disclaimer-badge {
+            background: #FDE68A;
+            color: #78350F;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .disclaimer-toggle {
+            background: #FEF3C7;
+            border: none;
+            color: #92400E;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .disclaimer-content {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #FDE68A;
+            color: #451A03;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        /* Contenedor principal */
+        main {
+            width: 92%;
+            max-width: 1150px;
+            margin: 30px auto 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
         }
-        .visor-toolbar span { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
-        .iframe-wrapper { position: relative; padding-bottom: 50%; height: 0; } 
-        .iframe-wrapper iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-expand {
-            background: var(--primary);
-            color: white;
-            padding: 8px 16px;
+
+        /* Visor Héroe con carga diferida anti-parpadeo */
+        .visor-hero {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .visor-toolbar {
+            background: var(--surface);
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .visor-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-tool {
+            background: #fff;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
             border-radius: 8px;
-            text-decoration: none;
             font-size: 0.8rem;
             font-weight: 600;
-            transition: opacity 0.2s;
-        }
-        .btn-expand:hover { opacity: 0.9; }
-
-        /* Área Interna */
-        .internal-area {
-            background-color: var(--surface);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-        }
-
-        /* Buscador */
-        .search-wrapper {
-            position: relative;
-            max-width: 400px;
-            margin-bottom: 32px;
-        }
-        #buscador {
-            width: 100%;
-            padding: 12px 16px 12px 44px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-        #buscador:focus { border-color: var(--primary); outline: none; }
-        .search-wrapper .material-symbols-outlined {
-            position: absolute; left: 12px; top: 12px; color: var(--text-muted);
-        }
-
-        /* Grid de Tarjetas */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-        .card {
-            background: var(--background);
-            padding: 24px;
-            border-radius: 16px;
+            cursor: pointer;
             text-decoration: none;
-            border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.05);
+        .btn-tool-primary {
+            background: var(--primary);
+            color: #fff;
             border-color: var(--primary);
         }
-        .card .icon-circle {
-            width: 48px; height: 48px;
-            background: var(--surface);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--primary);
+
+        /* Contenedor del Iframe y Placeholder */
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 580px;
+            background: #F1F5F9;
         }
-        .card h3 { font-size: 1.1rem; color: var(--text-main); }
-        .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+        .loading-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.7s ease-in-out;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #E2E8F0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Barrera de clave para el mapa principal */
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #F8FAFC;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            text-align: center;
+        }
+        .lock-box {
+            max-width: 380px;
+            width: 100%;
+        }
+        .lock-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .btn-unlock {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Barra de referencia inferior */
+        .visor-footer-bar {
+            padding: 10px 18px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .chips-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .chip {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* =========================================
+           ÁREA DE PRUEBAS (COLAPSABLE POR DEFECTO)
+           ========================================= */
+        .test-area {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+        .test-header-bar {
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .test-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .test-icon-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #EDE9FE;
+            color: #6D28D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .test-content-body {
+            display: none;
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            background: #fff;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .test-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .test-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: #C4B5FD;
+        }
+        .test-card h3 {
+            font-size: 1.05rem;
+            margin: 10px 0 4px;
+        }
+        .test-card p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Enlaces de Utilidad */
+        .util-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+        .util-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .util-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+        .util-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #E0F2FE;
+            color: #0284C7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Botón volver arriba */
+        .btn-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
 
         /* Footer */
         footer {
-            padding: 60px 20px;
             border-top: 1px solid var(--border);
+            padding: 40px 20px;
             text-align: center;
             background: var(--surface);
-        }
-        .footer-nav { display: flex; justify-content: center; gap: 32px; margin-bottom: 24px; flex-wrap: wrap; }
-        .footer-nav a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
-        .footer-nav a:hover { color: var(--primary); }
-        .footer-nav a.incidencias { color: var(--warning); }
-
-        .footer-credit {
-            color: var(--text-muted);
             font-size: 0.85rem;
-            max-width: 500px;
-            margin: 0 auto;
+            color: var(--text-muted);
+        }
+        .footer-credit {
+            margin: 10px 0;
+            line-height: 1.6;
         }
         .footer-credit a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
         }
-        .footer-credit a:hover {
-            text-decoration: underline;
-        }
+        .footer-credit a:hover { text-decoration: underline; }
 
-        /* Responsive */
         @media (max-width: 768px) {
+            .iframe-container { height: 420px; }
             h1 { font-size: 1.8rem; }
-            .iframe-wrapper { padding-bottom: 100%; }
-            .internal-area { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Barra institucional superior -->
+    <nav class="top-nav" aria-label="Accesibilidad e institucional">
+        <div class="top-nav-status">
+            <span class="status-dot"></span>
+            <span>Ayuntamiento de Alhaurín de la Torre &bull; IDE Municipal</span>
+        </div>
+        <div class="acc-controls">
+            <button class="btn-acc-toggle" onclick="toggleAltoContraste()">Alto Contraste</button>
+            <button class="btn-font" onclick="cambiarTamano('normal')">A</button>
+            <button class="btn-font" onclick="cambiarTamano('lg')">A+</button>
+            <button class="btn-font" onclick="cambiarTamano('xl')">A++</button>
+        </div>
+    </nav>
+
+    <!-- Cabecera -->
     <header>
         <img src="escudo.png" alt="Escudo Ayuntamiento Alhaurín de la Torre" class="escudo">
         <h1>Portal GIS Municipal</h1>
-        <p class="tagline">Infraestructura de Datos Espaciales para la gestión ciudadana y técnica del municipio.</p>
+        <div class="accent-bar"></div>
+        <p class="tagline">Infraestructura de Datos Espaciales para la gestión ciudadana, urbanística y técnica del término municipal de Alhaurín de la Torre.</p>
+
+        <!-- Disclaimer reducido por defecto -->
+        <div class="disclaimer-box">
+            <div class="disclaimer-header">
+                <div class="disclaimer-title">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">warning</span>
+                    <span>Aviso Legal: Datos de carácter informativo y no vinculante</span>
+                    <span class="disclaimer-badge">Sin validez fehaciente</span>
+                </div>
+                <button class="disclaimer-toggle" onclick="toggleDisclaimer()" id="btnDisclaimerToggle">Ver términos ▼</button>
+            </div>
+            <div class="disclaimer-content" id="disclaimerDetails">
+                <p>De conformidad con la normativa aplicable, el <strong>Ayuntamiento de Alhaurín de la Torre</strong> y el <strong>Área de Urbanismo, obras e infraestructura viaria</strong> informan que la totalidad de los datos espaciales, cartográficos y catastrales tienen carácter <strong>estrictamente orientativo y no vinculante</strong>.</p>
+                <p style="margin-top:6px;">No constituyen certificación urbanística oficial ni fehaciente. El Ayuntamiento declina cualquier responsabilidad por inexactitudes u omisiones frente a los expedientes originales custodiados en el Archivo Municipal.</p>
+            </div>
+        </div>
     </header>
 
     <main>
-        <!-- SECCIÓN PÚBLICA -->
+        <!-- 1. SECCIÓN PÚBLICA / PRINCIPAL: VISOR GENERAL -->
         <section>
             <div class="section-header">
-                <span class="material-symbols-outlined icon">explore</span>
-                <h2>Consulta Pública y Urbanismo</h2>
+                <h2>
+                    <span class="material-symbols-outlined" style="color: var(--primary);">explore</span>
+                    Visor General: Calificación y Catastro
+                </h2>
+                <div id="statusAccesoMap" style="font-size: 0.8rem; font-weight: 600; color: #D97706;">
+                    🔒 Requiere Clave
+                </div>
             </div>
-            
+
             <div class="visor-hero">
                 <div class="visor-toolbar">
-                    <span>Visor de Calificación y Catastro</span>
-                    <a href="https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529" target="_blank" class="btn-expand">Pantalla Completa</a>
+                    <div class="visor-toolbar-left">
+                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--primary);">map</span>
+                        <span>Cartografía de Calificación y Catastro</span>
+                    </div>
+                    <div class="toolbar-actions" id="mainMapActions" style="display: none;">
+                        <button class="btn-tool" onclick="copiarEnlaceVisor()" id="btnShare">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">share</span>
+                            <span id="txtShare">Compartir</span>
+                        </button>
+                        <button class="btn-tool" onclick="recargarVisorPrincipal()">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">refresh</span>
+                            Recargar
+                        </button>
+                        <a href="https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529" target="_blank" class="btn-tool btn-tool-primary">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+                            Pantalla Completa
+                        </a>
+                        <button class="btn-tool" onclick="bloquearMapaPrincipal()">Bloquear</button>
+                    </div>
                 </div>
-                <div class="iframe-wrapper">
-                    <iframe src="https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529" title="Mapa de Calificación Urbanística"></iframe>
+
+                <div class="iframe-container" id="containerMapa">
+                    <!-- Barrera de Clave: Alh.Urb.Gis -->
+                    <div class="lock-overlay" id="lockMainMap">
+                        <div class="lock-box">
+                            <span class="material-symbols-outlined" style="font-size: 42px; color: var(--primary); margin-bottom: 8px;">lock</span>
+                            <h3 style="margin-bottom: 6px;">Acceso al Visor Principal</h3>
+                            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">Introduzca la clave oficial para desbloquear el visor cartográfico interactivo.</p>
+                            <input type="password" id="passMainMap" class="lock-input" placeholder="Clave del mapa...">
+                            <p id="errMainMap" style="color: #DC2626; font-size: 0.75rem; font-weight: 700; display: none; margin-bottom: 10px;">Clave no válida. Ingrese la credencial oficial.</p>
+                            <button class="btn-unlock" onclick="desbloquearMapaPrincipal()">Inicializar Visor</button>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder de Carga sin parpadeo -->
+                    <div class="loading-placeholder" id="placeholderMainMap" style="display: none; opacity: 1;">
+                        <div class="spinner"></div>
+                        <h4 style="margin-bottom: 4px;">Inicializando Visor GIS...</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Cargando teselas de planeamiento territorial y cartografía catastral.</p>
+                    </div>
+
+                    <!-- Iframe Lazy Loaded -->
+                    <iframe id="iframePrincipal" style="display: none;" title="Visor Cartográfico de Calificación"></iframe>
+                </div>
+
+                <!-- Barra de referencia inferior -->
+                <div class="visor-footer-bar">
+                    <div class="chips-container">
+                        <span style="font-weight: 600;">Sectores de referencia:</span>
+                        <span class="chip">Centro Histórico</span>
+                        <span class="chip">Polígono Industrial</span>
+                        <span class="chip">Pinos de Alhaurín</span>
+                        <span class="chip">El Romeral</span>
+                    </div>
+                    <span>Datos exclusivamente informativos sin validez jurídica.</span>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN INTERNA -->
-        <section class="internal-area">
+        <!-- 2. ÁREA DE PRUEBAS (ZONA DE PRUEBAS PARA DESARROLLADORES - COLAPSABLE) -->
+        <section class="test-area" id="secAreaPruebas">
+            <div class="test-header-bar" onclick="toggleAreaPruebas()">
+                <div class="test-header-left">
+                    <div class="test-icon-badge">
+                        <span class="material-symbols-outlined">science</span>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 style="font-size: 1.05rem; font-weight: 700;">Área de pruebas</h3>
+                            <span style="background: #EDE9FE; color: #6D28D9; font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">Desarrolladores</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Zona de pruebas para desarrolladores</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="badgeTestSesion" style="font-size: 0.75rem; font-weight: 700; color: #10B981; display: none;">Sesión Activa</span>
+                    <button class="btn-tool" id="btnToggleTestArea">Desplegar ▼</button>
+                </div>
+            </div>
+
+            <!-- Contenido Colapsable -->
+            <div class="test-content-body" id="bodyAreaPruebas">
+                <!-- Bloque de clave para pruebas: 29007.alt -->
+                <div id="lockTestArea" style="text-align: center; padding: 20px; max-width: 400px; margin: 0 auto;">
+                    <span class="material-symbols-outlined" style="font-size: 36px; color: #7C3AED; margin-bottom: 6px;">lock</span>
+                    <h4 style="margin-bottom: 4px;">Acceso para Desarrolladores</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">Ingrese la clave técnica (29007.alt) para probar los visores en desarrollo.</p>
+                    <input type="password" id="passTestArea" class="lock-input" placeholder="Clave de desarrollador...">
+                    <p id="errTestArea" style="color: #DC2626; font-size: 0.75rem; font-weight: 700; display: none; margin-bottom: 10px;">Acceso denegado: Credencial no autorizada.</p>
+                    <button class="btn-unlock" style="background: #7C3AED;" onclick="desbloquearTestArea()">Validar Acceso</button>
+                </div>
+
+                <!-- Visores desbloqueados -->
+                <div id="unlockedDevVisors" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Herramientas técnicas en entorno de prueba</span>
+                        <button class="btn-tool" onclick="bloquearTestArea()">Cerrar Sesión</button>
+                    </div>
+
+                    <div class="test-grid">
+                        <div class="test-card">
+                            <div>
+                                <span style="background: #F3E8FF; color: #7E22CE; font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Económico</span>
+                                <h3>Actividad Económica</h3>
+                                <p>Visor de densidades comerciales, industriales y análisis de actividad económica 2024.</p>
+                            </div>
+                            <a href="https://at-1-2.github.io/Actividad-Econ-mica-2024/" target="_blank" class="btn-tool" style="justify-content: center;">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+                                Abrir Visor
+                            </a>
+                        </div>
+
+                        <div class="test-card">
+                            <div>
+                                <span style="background: #F3E8FF; color: #7E22CE; font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Urbanismo</span>
+                                <h3>Catastro Técnico</h3>
+                                <p>Consulta avanzada de expedientes técnicos y parcelario de ordenación municipal.</p>
+                            </div>
+                            <a href="https://at-1-2.github.io/urbanismo-alhaurin/" target="_blank" class="btn-tool" style="justify-content: center;">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+                                Abrir Visor
+                            </a>
+                        </div>
+
+                        <div class="test-card">
+                            <div>
+                                <span style="background: #F3E8FF; color: #7E22CE; font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Redes</span>
+                                <h3>Infraestructura Saneamiento</h3>
+                                <p>Inventario y cartografía de redes de abastecimiento y alcantarillado municipal.</p>
+                            </div>
+                            <a href="https://at-1-2.github.io/29007-Urb-Redes/" target="_blank" class="btn-tool" style="justify-content: center;">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+                                Abrir Visor
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ENLACES DE UTILIDAD -->
+        <section>
             <div class="section-header">
-                <span class="material-symbols-outlined icon">lock</span>
-                <h2>Gestión Interna y Análisis</h2>
+                <h2>
+                    <span class="material-symbols-outlined" style="color: var(--primary);">link</span>
+                    Enlaces de Utilidad y Gestión Documental
+                </h2>
             </div>
-
-            <div class="search-wrapper">
-                <span class="material-symbols-outlined">search</span>
-                <input type="text" id="buscador" placeholder="Buscar visores técnicos..." onkeyup="filtrar()">
-            </div>
-
-            <div class="cards-grid" id="grid-interna">
-                <a href="https://at-1-2.github.io/Actividad-Econ-mica-2024/" target="_blank" class="card item">
-                    <div class="icon-circle"><span class="material-symbols-outlined">monitoring</span></div>
-                    <h3>Actividad Económica</h3>
-                    <p>Visor de densidades comerciales, industriales y análisis de actividad 2024.</p>
+            <div class="util-grid">
+                <a href="https://alhaurindelatorre.es/category/areas-municipales/urbanismo-obras-e-infraestructura-viaria/planeamiento-urbanistico/" target="_blank" class="util-card">
+                    <div class="util-icon"><span class="material-symbols-outlined">description</span></div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700;">Normativa Urbanística</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-muted);">Planeamiento y ordenanzas oficiales</p>
+                    </div>
                 </a>
 
-                <a href="https://at-1-2.github.io/urbanismo-alhaurin/" target="_blank" class="card item">
-                    <div class="icon-circle"><span class="material-symbols-outlined">account_balance</span></div>
-                    <h3>Catastro Técnico</h3>
-                    <p>Consulta avanzada de expedientes y parcelario técnico municipal.</p>
+                <a href="https://www.alhaurindelatorre.es/" target="_blank" class="util-card">
+                    <div class="util-icon" style="background: #DCFCE7; color: #15803D;"><span class="material-symbols-outlined">account_balance</span></div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700;">Ayuntamiento Online</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-muted);">Sede electrónica y trámites</p>
+                    </div>
                 </a>
 
-                <a href="https://at-1-2.github.io/29007-Urb-Redes/" target="_blank" class="card item">
-                    <div class="icon-circle"><span class="material-symbols-outlined">hub</span></div>
-                    <h3>Infraestructura Saneamiento</h3>
-                    <p>Inventario y cartografía de redes de abastecimiento y alcantarillado.</p>
+                <a href="https://forms.gle/MgJXwuq5Qnbb1bWDA" target="_blank" class="util-card" style="background: #FFFBEB; border-color: #FDE68A;">
+                    <div class="util-icon" style="background: #FEF3C7; color: #B45309;"><span class="material-symbols-outlined">report</span></div>
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: #78350F;">Reportar Incidencia</h4>
+                        <p style="font-size: 0.78rem; color: #92400E;">Buzón de sugerencias e incidencias GIS</p>
+                    </div>
                 </a>
             </div>
         </section>
     </main>
 
+    <!-- Botón Volver Arriba -->
+    <button class="btn-top" id="btnScrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Volver arriba">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
+
+    <!-- Pie de Página -->
     <footer>
-        <div class="footer-nav">
-            <a href="https://alhaurindelatorre.es/category/areas-municipales/urbanismo-obras-e-infraestructura-viaria/planeamiento-urbanistico/" target="_blank">Normativa Urbanística</a>
-            <a href="https://www.alhaurindelatorre.es/" target="_blank">Ayuntamiento Online</a>
-            <a href="https://forms.gle/MgJXwuq5Qnbb1bWDA" target="_blank" class="incidencias">Reportar Incidencia</a>
-        </div>
-        
         <p class="footer-credit">
             &copy; 2026 Ayuntamiento de Alhaurín de la Torre. <br>
             Desarrollado por el <a href="https://alhaurindelatorre.es/areas-municipales/" target="_blank">Área de Urbanismo, obras e infraestructura viaria</a>.
         </p>
+        <p style="font-size: 0.75rem;">Plaza Alcalde Antonio Vega González S/N, 29130 Alhaurín de la Torre (Málaga) &bull; Tel. 952 41 71 50</p>
     </footer>
 
+    <!-- Scripts de funcionalidad e interactividad -->
     <script>
-        function filtrar() {
-            let filtro = document.getElementById('buscador').value.toLowerCase();
-            let tarjetas = document.querySelectorAll('.item');
-            tarjetas.forEach(t => {
-                let texto = t.innerText.toLowerCase();
-                t.style.display = texto.includes(filtro) ? "flex" : "none";
-            });
+        // Disclaimer Toggle
+        function toggleDisclaimer() {
+            let details = document.getElementById('disclaimerDetails');
+            let btn = document.getElementById('btnDisclaimerToggle');
+            if (details.style.display === 'block') {
+                details.style.display = 'none';
+                btn.innerText = 'Ver términos ▼';
+            } else {
+                details.style.display = 'block';
+                btn.innerText = 'Reducir ▲';
+            }
         }
+
+        // Accesibilidad
+        function toggleAltoContraste() {
+            document.body.classList.toggle('alto-contraste');
+        }
+        function cambiarTamano(tam) {
+            document.documentElement.classList.remove('font-lg', 'font-xl');
+            if (tam === 'lg') document.documentElement.classList.add('font-lg');
+            if (tam === 'xl') document.documentElement.classList.add('font-xl');
+        }
+
+        // Visor Principal: Clave Alh.Urb.Gis
+        function desbloquearMapaPrincipal() {
+            let pass = document.getElementById('passMainMap').value.trim();
+            if (pass === 'Alh.Urb.Gis') {
+                document.getElementById('lockMainMap').style.display = 'none';
+                document.getElementById('statusAccesoMap').innerText = '✅ Autorizado';
+                document.getElementById('statusAccesoMap').style.color = '#10B981';
+                document.getElementById('mainMapActions').style.display = 'flex';
+
+                // Iniciar Lazy Loading con marcador anti-parpadeo
+                let placeholder = document.getElementById('placeholderMainMap');
+                let iframe = document.getElementById('iframePrincipal');
+                placeholder.style.display = 'flex';
+                placeholder.style.opacity = '1';
+
+                iframe.src = 'https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529';
+                iframe.style.display = 'block';
+
+                // Cuando el iframe carga, dar 650ms al motor cartográfico y luego desvanecer suavemente
+                iframe.onload = function() {
+                    setTimeout(function() {
+                        placeholder.style.opacity = '0';
+                        setTimeout(function() {
+                            placeholder.style.display = 'none';
+                        }, 700);
+                    }, 650);
+                };
+            } else {
+                document.getElementById('errMainMap').style.display = 'block';
+            }
+        }
+
+        function bloquearMapaPrincipal() {
+            document.getElementById('lockMainMap').style.display = 'flex';
+            document.getElementById('statusAccesoMap').innerText = '🔒 Requiere Clave';
+            document.getElementById('statusAccesoMap').style.color = '#D97706';
+            document.getElementById('mainMapActions').style.display = 'none';
+            document.getElementById('iframePrincipal').style.display = 'none';
+            document.getElementById('iframePrincipal').src = '';
+            document.getElementById('passMainMap').value = '';
+        }
+
+        function recargarVisorPrincipal() {
+            let placeholder = document.getElementById('placeholderMainMap');
+            let iframe = document.getElementById('iframePrincipal');
+            placeholder.style.display = 'flex';
+            placeholder.style.opacity = '1';
+            iframe.src = iframe.src;
+            iframe.onload = function() {
+                setTimeout(function() {
+                    placeholder.style.opacity = '0';
+                    setTimeout(function() {
+                        placeholder.style.display = 'none';
+                    }, 700);
+                }, 650);
+            };
+        }
+
+        function copiarEnlaceVisor() {
+            let url = 'https://at-1-2.github.io/Urbanismo-Calificaci-n-Catastro/#12/36.6615/-4.5529';
+            navigator.clipboard.writeText(url);
+            let txt = document.getElementById('txtShare');
+            txt.innerText = '¡Copiado!';
+            setTimeout(function() { txt.innerText = 'Compartir'; }, 2000);
+        }
+
+        // Área de pruebas: Colapsar y Desplegar
+        function toggleAreaPruebas() {
+            let body = document.getElementById('bodyAreaPruebas');
+            let btn = document.getElementById('btnToggleTestArea');
+            if (body.style.display === 'block') {
+                body.style.display = 'none';
+                btn.innerText = 'Desplegar ▼';
+            } else {
+                body.style.display = 'block';
+                btn.innerText = 'Ocultar ▲';
+            }
+        }
+
+        // Desbloquear Área de pruebas: Clave 29007.alt
+        function desbloquearTestArea() {
+            let pass = document.getElementById('passTestArea').value.trim();
+            if (pass === '29007.alt') {
+                document.getElementById('lockTestArea').style.display = 'none';
+                document.getElementById('unlockedDevVisors').style.display = 'block';
+                document.getElementById('badgeTestSesion').style.display = 'inline-block';
+            } else {
+                document.getElementById('errTestArea').style.display = 'block';
+            }
+        }
+
+        function bloquearTestArea() {
+            document.getElementById('lockTestArea').style.display = 'block';
+            document.getElementById('unlockedDevVisors').style.display = 'none';
+            document.getElementById('badgeTestSesion').style.display = 'none';
+            document.getElementById('passTestArea').value = '';
+        }
+
+        // Scroll to top
+        window.onscroll = function() {
+            let btn = document.getElementById('btnScrollTop');
+            if (document.documentElement.scrollTop > 350) {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>
